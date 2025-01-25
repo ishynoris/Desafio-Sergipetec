@@ -10,12 +10,11 @@ public class MotoFactory extends VeiculoFactoryAbstract {
 
 	@Override
 	public VeiculoInterface produce(HashMap<String, String> map) throws InvalidParameterException {
-		var moto = new Moto(
-			map.get("fabricante")
-			, map.get("modelo")
-			, Integer.parseInt(map.get("ano"))
-			, Double.valueOf(map.get("preco"))
-		);
+		var moto = new Moto();
+		moto.setFabricante(map.get("fabricante"));
+		moto.setModelo(map.get("modelo"));
+		moto.setAno(Integer.parseInt(map.get("ano")));
+		moto.setPreco(Double.valueOf(map.get("preco")));
 
 		try {
 			moto.setCilindradas(Integer.parseInt(map.get("cilindradas")));

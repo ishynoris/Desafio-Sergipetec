@@ -4,23 +4,24 @@ import desafio.sergipetec.desafio_sergipetec.veiculo.TipoCombustivelEnum;
 import desafio.sergipetec.desafio_sergipetec.veiculo.VeiculoAbstract;
 import desafio.sergipetec.desafio_sergipetec.veiculo.VeiculoComCombustivelInterface;
 import desafio.sergipetec.desafio_sergipetec.veiculo.VeiculoComPortasInterface;
-import desafio.sergipetec.desafio_sergipetec.veiculo.VeiculoEnum;
+import jakarta.persistence.Column;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 
+@NoArgsConstructor
+@AllArgsConstructor
 public class Carro 
 	extends  VeiculoAbstract
 	implements VeiculoComCombustivelInterface, VeiculoComPortasInterface {
 	
+	@Column(name="vco_portas")
 	private int portas;
-	private TipoCombustivelEnum combustivel;
-	
-	protected Carro(String fabricante, String modelo, int ano, Double preco) {
-		super(fabricante, modelo, ano, preco);
-	}
 
-	@Override
-	public VeiculoEnum getTipo() {
-		return VeiculoEnum.CARRO;
-	}
+	@Column(name="vco_combustivel")
+	@Enumerated(EnumType.ORDINAL)
+	private TipoCombustivelEnum combustivel;
 
 	@Override
 	public int getQuantidadePortas() {

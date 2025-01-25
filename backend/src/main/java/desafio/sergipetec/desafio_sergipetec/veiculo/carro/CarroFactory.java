@@ -13,12 +13,11 @@ public class CarroFactory extends VeiculoFactoryAbstract {
 	public VeiculoInterface produce(HashMap<String, String> map) throws InvalidParameterException {
 		this.validateRequired(map);
 
-		var carro = new Carro(
-			map.get("fabricante")
-			, map.get("modelo")
-			, Integer.parseInt(map.get("ano"))
-			, Double.valueOf(map.get("preco"))
-		);
+		var carro = new Carro();
+		carro.setFabricante(map.get("fabricante"));
+		carro.setModelo(map.get("modelo"));
+		carro.setAno(Integer.parseInt(map.get("ano")));
+		carro.setPreco(Double.valueOf(map.get("preco")));
 
 		try {
 			carro.setQuantidadePortas(Integer.parseInt(map.get("portas")));

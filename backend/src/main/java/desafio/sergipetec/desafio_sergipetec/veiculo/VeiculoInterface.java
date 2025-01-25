@@ -2,7 +2,7 @@ package desafio.sergipetec.desafio_sergipetec.veiculo;
 
 public interface VeiculoInterface {
 	
-	public int getId();
+	public Long getId();
 
 	public String getFabricante();
 
