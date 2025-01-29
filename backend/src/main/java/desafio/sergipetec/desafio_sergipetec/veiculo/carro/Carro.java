@@ -8,36 +8,32 @@ import jakarta.persistence.Column;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @NoArgsConstructor
 @AllArgsConstructor
+@Getter
+@Setter
 public class Carro 
 	extends  VeiculoAbstract
 	implements VeiculoComCombustivelInterface, VeiculoComPortasInterface {
 	
 	@Column(name="vco_portas")
-	private int portas;
+	private int quantidadePortas;
 
 	@Column(name="vco_combustivel")
 	@Enumerated(EnumType.ORDINAL)
-	private TipoCombustivelEnum combustivel;
+	private TipoCombustivelEnum tipoCombustivel;
 
 	@Override
 	public int getQuantidadePortas() {
-		return this.portas;
+		return this.quantidadePortas;
 	}
 
 	@Override
 	public TipoCombustivelEnum getTipoCombustivel() {
-		return this.combustivel;
-	}
-
-	public void setQuantidadePortas(int portas) {
-		this.portas = portas;
-	}
-
-	public void setTipoCombustivel(TipoCombustivelEnum combustivel) {
-		this.combustivel = combustivel;
+		return this.tipoCombustivel;
 	}
 }
