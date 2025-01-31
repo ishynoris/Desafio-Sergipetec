@@ -69,11 +69,11 @@ public class Veiculo {
 	private Modelo modelo;
 
 	public boolean isCarro() {
-		return VeiculoEnum.isCarro(this.getTipo().type);
+		return VeiculoEnum.isCarro(this.getTipo().codigo);
 	}
 
 	public boolean isMoto() {
-		return VeiculoEnum.isMoto(this.getTipo().type);
+		return VeiculoEnum.isMoto(this.getTipo().codigo);
 	}
 
 
@@ -84,7 +84,7 @@ public class Veiculo {
 			gen.writeNumberField("vco_id", veiculo.id);
 			gen.writeNumberField("vco_ano", veiculo.ano);
 			gen.writeNumberField("vco_preco", veiculo.preco);
-			gen.writeNumberField("vco_tipo_cod", veiculo.tipo.type);
+			gen.writeNumberField("vco_tipo_cod", veiculo.tipo.codigo);
 			gen.writeStringField("vco_tipo_text", veiculo.tipo.name());
 
 			if (veiculo.isCarro()) {
