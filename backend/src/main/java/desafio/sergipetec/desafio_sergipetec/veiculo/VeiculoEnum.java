@@ -4,17 +4,17 @@ public enum VeiculoEnum {
 
 	CARRO(1), MOTO(2);
 	
-	public final int type;
+	public final int codigo;
 
-    private VeiculoEnum(int type) {
-        this.type = type;
+    private VeiculoEnum(int codigo) {
+        this.codigo = codigo;
     }
 
-	public static boolean isCarro(int type) {
-		return type == CARRO.type;
+	public static boolean isCarro(int codigo) {
+		return codigo == CARRO.codigo;
 	}
 
-	public static boolean isMoto(int type) {
-		return type == MOTO.type;
+	public static boolean isMoto(int codigo) {
+		return codigo == MOTO.codigo;
 	}
 }
