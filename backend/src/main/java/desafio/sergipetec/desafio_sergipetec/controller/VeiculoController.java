@@ -10,20 +10,35 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import desafio.sergipetec.desafio_sergipetec.controller.filtros.FiltrosVeiculoService;
 import desafio.sergipetec.desafio_sergipetec.veiculo.VeiculoService;
 
 @RestController
 @RequestMapping("/veiculo")
 public class VeiculoController {
 
-	@Autowired
-	VeiculoService service;
+	@Autowired private VeiculoService service;
+	@Autowired private FiltrosVeiculoService filtroService;
 	
 	@GetMapping
-	public String getAll() {
-		return "getAll";
+	public @ResponseBody HashMap<String, Object> getAll() throws Exception {
+		HashMap<String, Object> bodyResponse = new HashMap<>();
+		HashMap<String, Object> filtros = new HashMap<>();
+
+		try {
+			bodyResponse.put("veiculos", this.service.getVeiculos());
+
+			filtros.put("tipos", this.filtroService.getTipos());
+			filtros.put("modelos", this.filtroService.getModelos());
+			bodyResponse.put("filtros", filtros);
+		} catch (Exception e) {
+			throw new Exception(e.getMessage());
+		}
+		
+		return bodyResponse;
 	}
 
 	@GetMapping("/{id}")
@@ -32,8 +47,8 @@ public class VeiculoController {
 	}
 
 	@PostMapping
-	public String save(@RequestBody HashMap<String, String> veiculo) {
-		return "getById: " + veiculo.toString();
+	public String save(@RequestBody HashMap<String, String> map) {
+		return "getById: " + map.toString();
 	}
 
 	@PutMapping("/{id}")
