@@ -1,6 +1,8 @@
 package desafio.sergipetec.desafio_sergipetec.controller.filtros;
 
 import java.util.HashMap;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,17 +21,13 @@ public class FiltrosVeiculoService {
 		this.service = service;
 	}
 
-	public HashMap<Integer, String> getTipos() {
+	public Map<Integer, String> getTipos() {
 		return VeiculoEnum.getFiltro();
 	}
 
-	public HashMap<Integer, String> getModelos() {
+	public Map<Integer, String> getModelos() {
 		var modelos = this.service.getModelos();
-		var map = new HashMap<Integer, String>();
-
-		for (Modelo modelo : modelos) {
-			map.put(modelo.getId(), modelo.getNome());
-		}
-		return map;
+		var collector = Collectors.toMap(Modelo::getId, Modelo::getNome);
+		return modelos.stream().collect(collector);
 	}
 }

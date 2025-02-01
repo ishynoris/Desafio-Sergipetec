@@ -76,7 +76,6 @@ public class Veiculo {
 		return VeiculoEnum.isMoto(this.getTipo().codigo);
 	}
 
-
 	public static class VeiculoSerializer extends JsonSerializer<Veiculo> {
 		@Override
 		public void serialize(Veiculo veiculo, JsonGenerator gen, SerializerProvider serializers) throws IOException {

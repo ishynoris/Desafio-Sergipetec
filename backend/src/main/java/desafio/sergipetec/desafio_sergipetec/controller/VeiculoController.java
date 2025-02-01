@@ -3,6 +3,8 @@ package desafio.sergipetec.desafio_sergipetec.controller;
 import java.util.HashMap;
 import java.util.List;
 
+import javax.management.InvalidAttributeValueException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -40,7 +42,7 @@ public class VeiculoController {
 	}
 
 	@GetMapping("/filtro")
-	public @ResponseBody List<Veiculo> getAll(@RequestParam HashMap<String, String> form) {
+	public @ResponseBody List<Veiculo> getAll(@RequestParam HashMap<String, String> form) throws NumberFormatException, InvalidAttributeValueException {
 		return this.service.getVeiculos(form);
 	}
 

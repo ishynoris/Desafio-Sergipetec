@@ -2,14 +2,11 @@ package desafio.sergipetec.desafio_sergipetec.veiculo;
 
 import java.util.HashMap;
 
+import javax.management.InvalidAttributeValueException;
+
 import org.springframework.data.jpa.domain.Specification;
 
-import jakarta.persistence.criteria.CriteriaBuilder;
-import jakarta.persistence.criteria.CriteriaQuery;
-import jakarta.persistence.criteria.Predicate;
-import jakarta.persistence.criteria.Root;
-
-public class VeiculoFilter implements Specification<Veiculo> {
+public class VeiculoFilter {
 
 	private HashMap<String, String> filter;
 
@@ -17,25 +14,39 @@ public class VeiculoFilter implements Specification<Veiculo> {
 		this.filter = filter;
 	}
 
-	@Override
-	public Predicate toPredicate(Root<Veiculo> root, CriteriaQuery<?> query, CriteriaBuilder builder) {
-		var predicate = builder.and();
+	public Specification<Veiculo> getSpecs() throws InvalidAttributeValueException, NumberFormatException {
+		Specification<Veiculo> specs = Specification.where(null);
 
 		if (this.filter.containsKey("mdo_id")) {
-			var modeloId = this.filter.get("mdo_id");
-			predicate = builder.equal(root.get("modelo"), modeloId);
+			var param = Integer.parseInt(this.filter.get("mdo_id"));
+			specs = specs.and(this.withModeloId(param));
 		}
 
 		if (this.filter.containsKey("vco_tipo")) {
-			var tipoVeiculo = this.filter.get("vco_tipo");
-			predicate = builder.equal(root.get("tipo"), tipoVeiculo);
+			var codigo = Integer.parseInt(this.filter.get("vco_tipo"));
+			var param = VeiculoEnum.parse(codigo);
+			specs = specs.and(this.withTipo(param));
 		}
 
 		if (this.filter.containsKey("vco_ano")) {
-			var ano = this.filter.get("vco_ano");
-			predicate = builder.equal(root.get("ano"), ano);
+			var param = Integer.parseInt(this.filter.get("vco_ano"));
+			specs = specs.and(this.withAno(param));
 		}
+		return specs;
+	}
 
-		return predicate;
+	public Specification<Veiculo> withModeloId(Integer modeloId) {
+		return (root, query, builder) -> {
+			var expression = root.get("modelo").get("id");
+			return builder.equal(expression, modeloId);
+		};
+	}
+
+	public Specification<Veiculo> withTipo(VeiculoEnum tipo) {
+		return (root, query, builder) -> builder.equal(root.get("tipo"), tipo.codigo);
+	}
+
+	public Specification<Veiculo> withAno(Integer ano) {
+		return (root, query, builder) -> builder.equal(root.get("ano"), ano);
 	}
 }
