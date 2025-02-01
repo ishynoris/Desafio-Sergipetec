@@ -44,6 +44,10 @@ public class Modelo {
 	@JoinColumn(name="fbe_id")
 	private Fabricante fabricante;
 
+	public boolean percente(Fabricante fabricante) {
+		return this.fabricante.getId() == fabricante.getId();
+	}
+
 	public static class ModeloSerializer extends JsonSerializer<Modelo> {
 		@Override
 		public void serialize(Modelo modelo, JsonGenerator gen, SerializerProvider serializers) throws IOException {

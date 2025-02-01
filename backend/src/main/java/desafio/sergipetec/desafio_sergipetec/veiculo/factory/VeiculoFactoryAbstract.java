@@ -39,6 +39,16 @@ public abstract class VeiculoFactoryAbstract implements VeiculoFactoryInterface 
 		if (!map.containsKey("vco_preco")) {
 			throw new InvalidParameterException("Informe o preço");
 		}
+
+		var fabricante = this.getFabricante(map);
+		var modelo = this.getModelo(map);
+		if (!modelo.percente(fabricante)) {
+			throw new InvalidParameterException(String.format(
+				"O modelo %s não percente ao fabricante %s",
+				modelo.getNome(),
+				fabricante.getNome()
+			));
+		}
 	}
 
 	@Override
