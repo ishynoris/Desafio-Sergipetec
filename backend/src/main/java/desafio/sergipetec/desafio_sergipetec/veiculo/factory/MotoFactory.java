@@ -25,6 +25,17 @@ public class MotoFactory extends VeiculoFactoryAbstract {
 	}
 
 	@Override
+	public Veiculo replace(Veiculo veiculo, HashMap<String, String> map) throws InvalidParameterException {
+		var novoVeiculo = super.replace(veiculo, map);
+
+		if (map.containsKey("vco_cilindradas")) {
+			var cilindradas = Integer.parseInt(map.get("vco_cilindradas"));
+			novoVeiculo.setCilindradas(cilindradas);
+		}
+		return novoVeiculo;
+	}
+
+	@Override
 	public void validateRequired(HashMap<String, String> map) throws InvalidParameterException {
 		super.validateRequired(map);
 

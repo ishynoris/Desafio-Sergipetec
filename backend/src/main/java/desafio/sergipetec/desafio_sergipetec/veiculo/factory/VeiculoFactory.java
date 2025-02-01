@@ -24,6 +24,17 @@ final public class VeiculoFactory {
 	}
 
 	public Veiculo produces(HashMap<String, String> map) throws InvalidAttributesException {
+		var factory = this.getFactory(map);
+		factory.validateRequired(map);
+		return factory.produce(map);
+	}
+
+	public Veiculo replace(Veiculo veiculo, HashMap<String, String> map) throws InvalidAttributesException  {
+		var factory = this.getFactory(map);
+		return factory.replace(veiculo, map);
+	}
+
+	private VeiculoFactoryInterface getFactory(HashMap<String, String> map) throws InvalidAttributesException {
 		if (!map.containsKey("vco_tipo")) {
 			throw new InvalidAttributesException("Informe o tipo do veículo");
 		}
@@ -33,8 +44,6 @@ final public class VeiculoFactory {
 			throw new InvalidAttributesException("Tipo de veículo indefinido");
 		}
 
-		var factory = this.factories.get(tipo);
-		factory.validateRequired(map);
-		return factory.produce(map);
+		return this.factories.get(tipo);
 	}
 }

@@ -10,4 +10,6 @@ public interface VeiculoFactoryInterface {
 	public void validateRequired(HashMap<String, String> map) throws InvalidParameterException;
 
 	public Veiculo produce(HashMap<String, String> map) throws InvalidParameterException;
+
+	public Veiculo replace(Veiculo veiculo, HashMap<String, String> map) throws InvalidParameterException;
 }

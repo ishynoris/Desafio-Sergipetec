@@ -65,6 +65,30 @@ public abstract class VeiculoFactoryAbstract implements VeiculoFactoryInterface 
 		return veiculo;
 	}
 
+	@Override
+	public Veiculo replace(Veiculo veiculo, HashMap<String, String> map) throws InvalidParameterException {
+		if (map.containsKey("fbe_id")) {
+			var fabricante = this.getFabricante(map);
+			veiculo.setFabricante(fabricante);
+		}
+
+		if (map.containsKey("mdo_id")) {
+			var modelo = this.getModelo(map);
+			veiculo.setModelo(modelo);
+		}
+
+		if (map.containsKey("vco_ano")) {
+			var ano = Integer.parseInt(map.get("vco_ano"));
+			veiculo.setAno(ano);
+		}
+
+		if (map.containsKey("vco_preco")) {
+			var preco = Double.valueOf(map.get("vco_preco"));
+			veiculo.setPreco(preco);
+		}
+		return veiculo;
+	}
+
 	protected Fabricante getFabricante(HashMap<String, String> map) throws EntityNotFoundException {
 		var fabricanteId = Integer.parseInt(map.get("fbe_id"));
 		return this.fabricanteService.get(fabricanteId);
