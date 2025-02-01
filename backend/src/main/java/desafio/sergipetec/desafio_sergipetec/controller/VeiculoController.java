@@ -27,19 +27,14 @@ public class VeiculoController {
 	@Autowired private FiltrosVeiculoService filtroService;
 	
 	@GetMapping
-	public @ResponseBody HashMap<String, Object> getAll() throws Exception {
-		HashMap<String, Object> bodyResponse = new HashMap<>();
+	public @ResponseBody HashMap<String, Object> getAll() {
 		HashMap<String, Object> filtros = new HashMap<>();
+		filtros.put("tipos", this.filtroService.getTipos());
+		filtros.put("modelos", this.filtroService.getModelos());
 
-		try {
-			bodyResponse.put("veiculos", this.service.getVeiculos());
-
-			filtros.put("tipos", this.filtroService.getTipos());
-			filtros.put("modelos", this.filtroService.getModelos());
-			bodyResponse.put("filtros", filtros);
-		} catch (Exception e) {
-			throw new Exception(e.getMessage());
-		}
+		HashMap<String, Object> bodyResponse = new HashMap<>();
+		bodyResponse.put("veiculos", this.service.getVeiculos());
+		bodyResponse.put("filtros", filtros);
 
 		return bodyResponse;
 	}
