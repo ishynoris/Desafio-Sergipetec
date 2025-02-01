@@ -30,6 +30,11 @@ public class VeiculoService {
 		return this.veiculoDAO.findAll();
 	}
 
+	public List<Veiculo> getVeiculos(HashMap<String, String> form) {
+		var filtro = new VeiculoFilter(form);
+		return this.veiculoDAO.findAll(filtro);
+	}
+
 	public List<Modelo> getModelos() {
 		return this.modeloRepo.findAll();
 	}
