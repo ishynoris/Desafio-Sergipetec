@@ -29,18 +29,37 @@ const ApiVeiculo = {
 
 			renderTabela(ApiVeiculo.divTabela(), json, true);
 		})
+	},
+
+	onEditar: (e) => {
+		e.preventDefault();
+		console.log("onEditar")
+	},
+
+	onExcluir: (e) => {
+		e.preventDefault();
+		console.log("onExcluir");
 	}
 }
 
 function renderFiltros($form, filtros) {
+	const appendDiv = ($el) => {
+		const $div = DomBuilder.div("col");
+		$div.appendChild($el);
+		return $div;
+	}
+
 	const tipos = filtros.tipos;
 	const modelos = filtros.modelos;
 
+	const $div = DomBuilder.div("row");
+	$div.appendChild(appendDiv(DomBuilder.inputText("vco_ano", "Ano")));
+	$div.appendChild(appendDiv(DomBuilder.select("vco_tipo", tipos)));
+	$div.appendChild(appendDiv(DomBuilder.select("mdo_id", modelos)));
+	$div.appendChild(appendDiv(DomBuilder.button("btn-filtrar", "Filtrar", ApiVeiculo.onFiltrar)));
+
 	$form.method = "post";
-	$form.appendChild(DomBuilder.inputText("vco_ano", "Ano"));
-	$form.appendChild(DomBuilder.select("vco_tipo", tipos));
-	$form.appendChild(DomBuilder.select("mdo_id", modelos));
-	$form.appendChild(DomBuilder.button("btn-filtrar", "Filtrar", ApiVeiculo.onFiltrar));
+	$form.appendChild($div);
 }
 
 function renderTabela($div, aVeiculos, clearBefore = false) {
@@ -56,4 +75,8 @@ function renderTabela($div, aVeiculos, clearBefore = false) {
 		veiculo.vco_preco_moeda 
 	]);
 	$div.appendChild(DomBuilder.table(aTitulos, aMatriz));
+
+	const $table = $div.querySelector("table");
+	DomBuilder.addActionButton($table, "btn_editar", "Editar", ApiVeiculo.onEditar);
+	DomBuilder.addActionButton($table, "btn_excluir", "Excluir", ApiVeiculo.onExcluir);
 }

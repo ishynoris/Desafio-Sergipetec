@@ -17,6 +17,16 @@ const API = {
 }
 
 const DomBuilder = {
+
+	div: (classList) => {
+		const $div = document.createElement("div");
+		const aClass = classList.split(" ");
+		for (const index in aClass) {
+			$div.classList.add(aClass[index]);
+		}
+		return $div;
+	},
+	
 	inputText: (name, placeholder = "") => {
 		const $input = document.createElement("input");
 		$input.name = name;
@@ -58,6 +68,8 @@ const DomBuilder = {
 
 	table: (aTitulos, aMatriz) => {
 		const $table = document.createElement("table");
+		$table.classList.add("table", "table-striped");
+
 		$table.appendChild(DomBuilder.thead(aTitulos));
 		$table.appendChild(DomBuilder.tbody(aMatriz));
 		return $table;
@@ -66,6 +78,7 @@ const DomBuilder = {
 	select: (name, options) => {
 		const $select = document.createElement("select");
 		$select.name = name;
+		$select.classList.add("form-select");
 
 		$select.appendChild(DomBuilder.option("", "Selecionar todos"));
 		for (const codigo in options) {
@@ -87,6 +100,37 @@ const DomBuilder = {
 		$button.name = name;
 		$button.innerHTML = texto;
 		$button.addEventListener("click", onClick);
+		$button.classList.add("btn");
 		return $button;
+	},
+
+	addActionButton: ($table, name, texto, onClick) => {
+		let $thAcoes = $table.querySelector("th.acoes");
+		if ($thAcoes == undefined || $thAcoes == null) {
+			const $trTitulos = $table.querySelector("thead > tr");
+			const $thAcoes = DomBuilder.cell("Acoes", "th");
+			$thAcoes.classList.add("acoes");
+
+			$trTitulos.appendChild($thAcoes);
+		}
+
+		const $tdAcoes = $table.querySelectorAll("td.acoes");
+		let $aTdAcoes = $tdAcoes == null || $tdAcoes == undefined ? [] : Array.from($tdAcoes);
+		if ($aTdAcoes.length == 0) {
+			const $aTr = Array.from($table.querySelectorAll("tbody > tr"));
+			for (const index in $aTr) {
+				const $cell = DomBuilder.cell("", "td");
+				$cell.classList.add("acoes");
+
+				$aTr[index].appendChild($cell);
+				$aTdAcoes.push($cell);
+			}
+		}
+
+		for (const index in $aTdAcoes) {
+			const $btnAcao = DomBuilder.button(`${name}_#${index}`, texto, onClick);
+			$btnAcao.classList.add(name, "btn", "btn-outline-primary");
+			$aTdAcoes[index].appendChild($btnAcao);
+		}
 	}
 }
