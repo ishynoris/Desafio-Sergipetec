@@ -97,6 +97,30 @@ public class Veiculo {
 		return VeiculoFactory.toMap(this);
 	}
 
+	@Override
+	public String toString() {
+		StringBuilder builder = new StringBuilder();
+		builder.append(String.format(
+			"%s %s", 
+			this.fabricante.getNome()
+			, this.modelo.getNome()
+		));
+
+		if (this.isCarro()) {
+			builder.append(String.format(
+				" %s %d portas", 
+				this.tipoCombustivel.name(),
+				this.quantidadePortas
+			));
+		}
+
+		if (this.isMoto()) {
+			builder.append(String.format(" %dcc", this.cilindradas));
+		}
+
+		return builder.toString();
+	}
+
 	public static class VeiculoSerializer extends JsonSerializer<Veiculo> {
 		@Override
 		public void serialize(Veiculo veiculo, JsonGenerator gen, SerializerProvider serializers) throws IOException {

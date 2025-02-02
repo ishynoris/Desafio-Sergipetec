@@ -73,6 +73,7 @@ final public class VeiculoFactory {
 		gen.writeNumberField("vco_preco", veiculo.getPreco());
 		gen.writeNumberField("vco_tipo_cod", tipo.codigo);
 		gen.writeStringField("vco_tipo_text", tipo.name());
+		gen.writeStringField("vco_descricao", veiculo.toString());
 
 		if (veiculo.isCarro()) {
 			var combustivel = veiculo.getTipoCombustivel();
@@ -85,8 +86,8 @@ final public class VeiculoFactory {
 			gen.writeStringField("vco_cilindradas", veiculo.getCilindradas() + "cc");
 		}
 
-		gen.writeObjectField("fbe_id", veiculo.getFabricanteId());
-		gen.writeObjectField("mdo_id", veiculo.getModeloId());
+		gen.writeObjectField("vco_fabricante", veiculo.getFabricante());
+		gen.writeObjectField("vco_modelo", veiculo.getModelo());
 		gen.writeBooleanField("vco_is_carro", veiculo.isCarro());
 		gen.writeBooleanField("vco_is_moto", veiculo.isMoto());
 		gen.writeEndObject();
