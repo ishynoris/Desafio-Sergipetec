@@ -4,12 +4,12 @@ import java.util.HashMap;
 
 public enum TipoCombustivelEnum {
 	
-	GASOLINA(1), ETANOL(2), DIESEL(3), FLEX(4);
+	GASOLINA, ETANOL, DIESEL, FLEX;
 
 	public final int codigo;
 
-	private TipoCombustivelEnum(int codigo) {
-		this.codigo = codigo;
+	private TipoCombustivelEnum() {
+		this.codigo = this.ordinal();
 	}
 
 	public static TipoCombustivelEnum parse(String value) throws Exception {

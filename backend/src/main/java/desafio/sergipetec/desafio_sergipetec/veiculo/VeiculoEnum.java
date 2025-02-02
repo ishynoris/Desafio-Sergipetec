@@ -9,12 +9,12 @@ import javax.management.InvalidAttributeValueException;
 
 public enum VeiculoEnum {
 
-	CARRO(1), MOTO(2);
+	CARRO, MOTO;
 	
 	public final int codigo;
 
-    private VeiculoEnum(int codigo) {
-        this.codigo = codigo;
+    private VeiculoEnum() {
+        this.codigo = this.ordinal();
 	}
 
 	public Integer getCodigo() {
