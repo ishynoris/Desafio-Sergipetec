@@ -1,5 +1,15 @@
 const ENV = {
-	api_url: "http://localhost:8080"
+	api_url: "http://localhost:8080",
+	tipo_veiculo: {
+		CARRO: 0,
+		MOTO: 1,
+	},
+	tipo_combustivel: {
+		GASOLINA: 0, 
+		ETANOL: 1, 
+		DIESEL: 2, 
+		FLEX: 3
+	}
 }
 
 const API = {
@@ -20,19 +30,30 @@ const DomBuilder = {
 
 	div: (classList) => {
 		const $div = document.createElement("div");
-		const aClass = classList.split(" ");
-		for (const index in aClass) {
-			$div.classList.add(aClass[index]);
-		}
-		return $div;
+		return DomBuilder.addClass($div, classList);
 	},
 	
+	label: (texto, $el) => {
+		if ($el.id == "") {
+			$el.id = $el.name;
+		}
+
+		const $label = document.createElement("label");
+		$label.innerText = texto;
+		$label.for = $el.id;
+
+		const $div = DomBuilder.div("form-floating");
+		$div.appendChild($el);
+		$div.appendChild($label);
+		return $div;
+	},
+
 	inputText: (name, placeholder = "") => {
 		const $input = document.createElement("input");
 		$input.name = name;
 		$input.type = "text";
 		$input.placeholder = placeholder;
-		return $input;
+		return DomBuilder.addClass($input, "form-control");
 	},
 
 	cell: (texto, cell = "td") => {
@@ -75,7 +96,7 @@ const DomBuilder = {
 		return $table;
 	},
 
-	select: (name, options) => {
+	select: (name, options, onChange = undefined) => {
 		const $select = document.createElement("select");
 		$select.name = name;
 		$select.classList.add("form-select");
@@ -84,6 +105,10 @@ const DomBuilder = {
 		for (const codigo in options) {
 			const option = options[codigo];
 			$select.appendChild(DomBuilder.option(codigo, option));
+		}
+
+		if (onChange != undefined) {
+			$select.addEventListener("change", onChange);
 		}
 		return $select;
 	},
@@ -102,6 +127,25 @@ const DomBuilder = {
 		$button.addEventListener("click", onClick);
 		$button.classList.add("btn");
 		return $button;
+	},
+
+	modal: (id, title) => {
+		const $divModal = DomBuilder.div("modal fade");
+		$divModal.id = id;
+
+		$divModal.innerHTML = `
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+				  <h1 class="modal-title fs-5" id="modal-veiculo-label">${title}</h1>
+				  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+				</div>
+				<div class="modal-body"></div>
+				<div class="modal-footer"></div>
+			</div>
+		</div>
+  		`
+		return $divModal;
 	},
 
 	addActionButton: ($table, name, texto, onClick) => {
@@ -132,5 +176,12 @@ const DomBuilder = {
 			$btnAcao.classList.add(name, "btn", "btn-outline-primary");
 			$aTdAcoes[index].appendChild($btnAcao);
 		}
+	},
+
+	addClass: ($el, classes) => {
+		classes.split(" ").forEach(cls => {
+			$el.classList.add(cls);
+		});
+		return $el;
 	}
 }
