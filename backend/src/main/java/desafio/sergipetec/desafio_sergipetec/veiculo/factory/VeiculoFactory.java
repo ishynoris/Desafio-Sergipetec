@@ -1,7 +1,9 @@
 package desafio.sergipetec.desafio_sergipetec.veiculo.factory;
 
 import java.io.IOException;
+import java.text.NumberFormat;
 import java.util.HashMap;
+import java.util.Locale;
 
 import javax.naming.directory.InvalidAttributesException;
 
@@ -71,6 +73,7 @@ final public class VeiculoFactory {
 		gen.writeNumberField("vco_id", veiculo.getId());
 		gen.writeNumberField("vco_ano", veiculo.getAno());
 		gen.writeNumberField("vco_preco", veiculo.getPreco());
+		gen.writeStringField("vco_preco_moeda", convertMoeda(veiculo.getPreco()));
 		gen.writeNumberField("vco_tipo_cod", tipo.codigo);
 		gen.writeStringField("vco_tipo_text", tipo.name());
 		gen.writeStringField("vco_descricao", veiculo.toString());
@@ -91,6 +94,11 @@ final public class VeiculoFactory {
 		gen.writeBooleanField("vco_is_carro", veiculo.isCarro());
 		gen.writeBooleanField("vco_is_moto", veiculo.isMoto());
 		gen.writeEndObject();
+	}
+
+	private static String convertMoeda(Double val) {
+		var locale = new Locale.Builder().setLanguage("pt").setRegion("BR").build();
+		return NumberFormat.getCurrencyInstance(locale).format(val);
 	}
 
 	private static String convert(Number val) {
