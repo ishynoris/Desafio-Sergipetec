@@ -48,10 +48,11 @@ const DomBuilder = {
 		return $div;
 	},
 
-	inputText: (name, placeholder = "") => {
+	inputText: (name, placeholder = "", value = "") => {
 		const $input = document.createElement("input");
 		$input.name = name;
 		$input.type = "text";
+		$input.value = value;
 		$input.placeholder = placeholder;
 		return DomBuilder.addClass($input, "form-control");
 	},
@@ -96,15 +97,21 @@ const DomBuilder = {
 		return $table;
 	},
 
-	select: (name, options, onChange = undefined) => {
+	select: (name, options, value = undefined, onChange = undefined) => {
 		const $select = document.createElement("select");
 		$select.name = name;
 		$select.classList.add("form-select");
 
 		$select.appendChild(DomBuilder.option("", "Selecionar todos"));
+		let index = 0;
 		for (const codigo in options) {
-			const option = options[codigo];
-			$select.appendChild(DomBuilder.option(codigo, option));
+			const texto = options[codigo];
+			const $option = DomBuilder.option(codigo, texto);
+			if (value != undefined && codigo == value) {
+				$option.selected = "selected";
+			}
+
+			$select.appendChild($option);
 		}
 
 		if (onChange != undefined) {
@@ -182,6 +189,11 @@ const DomBuilder = {
 		classes.split(" ").forEach(cls => {
 			$el.classList.add(cls);
 		});
+		return $el;
+	},
+
+	addPseudo: ($el, key, value) => {
+		$el.setAttribute(`data_${key}`, value);
 		return $el;
 	}
 }

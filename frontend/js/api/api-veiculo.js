@@ -4,6 +4,7 @@ const ApiVeiculo = {
 	divFiltros: () => document.getElementById("div_filtros"),
 	formFiltros: () => ApiVeiculo.divFiltros().querySelector("form"),
 	divTabela: () => document.getElementById("div_tabela"),
+	divModal: () => DomBuilder.modal("modal-veiculo", "Cadastrar veículo"),
 
 	index: () => {
 		API.get("veiculo", function(status, json) {
@@ -17,8 +18,8 @@ const ApiVeiculo = {
 		})
 	},
 
-	abrirModal: () => {
-		const $divModal = DomBuilder.modal("modal-veiculo", "Cadastrar veículo");
+	abrirModal: (veiculo = undefined) => {
+		const $divModal = ApiVeiculo.divModal();
 
 		API.get("filtros", (status, json) => {
 			if (status != 200) {
@@ -26,7 +27,7 @@ const ApiVeiculo = {
 				return;
 			}
 
-			renderModal($divModal, json);
+			renderModal($divModal, json, veiculo);
 		})
 	},
 
@@ -45,7 +46,18 @@ const ApiVeiculo = {
 
 	onEditar: (e) => {
 		e.preventDefault();
-		console.log("onEditar")
+		const $tr = e.currentTarget.closest("tr");
+		const codigo = $tr.getAttribute("data-vco_id");
+
+		API.get(`veiculo/${codigo}`, function(status, veiculo) {
+			if (status != 200) {
+				alert("Não foi possível editar o veículo");
+				return;
+			}
+
+
+			ApiVeiculo.abrirModal(veiculo);
+		})
 	},
 
 	onExcluir: (e) => {
@@ -99,6 +111,13 @@ function renderTabela($div, aVeiculos, clearBefore = false) {
 	const $table = $div.querySelector("table");
 	DomBuilder.addActionButton($table, "btn_editar", "Editar", ApiVeiculo.onEditar);
 	DomBuilder.addActionButton($table, "btn_excluir", "Excluir", ApiVeiculo.onExcluir);
+
+	const $aTr = $table.querySelectorAll("tbody > tr");
+	Array.from($aTr).forEach($tr => {
+		const codigo = $tr.querySelector("td:first-child").innerHTML;
+		$tr.setAttribute("data-vco_id", codigo);
+	});
+	
 }
 
 function renderModal($divModal, filtros, veiculo = undefined) {
@@ -108,35 +127,45 @@ function renderModal($divModal, filtros, veiculo = undefined) {
 	const $modalBody = $divModal.querySelector(".modal-body");
 	const $modalFooter = $divModal.querySelector(".modal-footer");
 
-	const $iptAno = DomBuilder.inputText("vco_ano", "Ano de fabricação");
-	$modalBody.appendChild(DomBuilder.label("Ano de fabricação", $iptAno));
-	
-	const $selTipo = DomBuilder.select("vco_tipo", filtros.tipos, (e) => {
-		const tipoId = $selTipo.options[$selTipo.selectedIndex].value;
+	const toggleTipoCarro = (tipoId, veiculo = undefined) => {
 		const aCampos = Array.from($modalBody.querySelectorAll(".campos_carro, .campos_moto"));
 		aCampos.forEach($campo => $campo.parentNode.remove());
-		
+
 		if (tipoId == ENV.tipo_veiculo.CARRO) {
 			seletorRemove = "carros_moto";
 
-			const $selCombustivel = DomBuilder.select("vco_combustivel", filtros.combustivel);
+			const iCombustivel = veiculo == undefined ? undefined : veiculo.vco_combustivel_cod;
+			const $selCombustivel = DomBuilder.select("vco_combustivel", filtros.combustivel, iCombustivel);
 			DomBuilder.addClass($selCombustivel, "campos_carro required")
 			$modalBody.appendChild(DomBuilder.label("Tipo de combustivel", $selCombustivel));
 
-			const $iptPortas = DomBuilder.inputText("vco_portas", "Portas");
+			const iPortas = veiculo == undefined ? undefined : veiculo.vco_portas;
+			const $iptPortas = DomBuilder.inputText("vco_portas", "Portas", iPortas);
 			DomBuilder.addClass($iptPortas, "campos_carro required")
 			$modalBody.appendChild(DomBuilder.label("Portas", $iptPortas));
 		} else if (tipoId == ENV.tipo_veiculo.MOTO) {
 			seletorRemove = "campos_carro";
 
-			const $iptPortas = DomBuilder.inputText("vco_cilindradas", "Cilindradas");
+			const iCilindradas = veiculo == undefined ? undefined : veiculo.vco_cilindradas;
+			const $iptPortas = DomBuilder.inputText("vco_cilindradas", "Cilindradas", iCilindradas.replace("cc", ""));
 			DomBuilder.addClass($iptPortas, "campos_moto required")
 			$modalBody.appendChild(DomBuilder.label("Cilindradas", $iptPortas));
 		}
+	}
+
+	const iAno = veiculo == undefined ? undefined : veiculo.vco_ano;
+	const $iptAno = DomBuilder.inputText("vco_ano", "Ano de fabricação", iAno);
+	$modalBody.appendChild(DomBuilder.label("Ano de fabricação", $iptAno));
+
+	const iTipo = veiculo == undefined ? undefined : veiculo.vco_tipo_cod;
+	const $selTipo = DomBuilder.select("vco_tipo", filtros.tipos, iTipo, (e) => {
+		const tipoId = $selTipo.options[$selTipo.selectedIndex].value;
+		toggleTipoCarro(tipoId);
 	});
 	$modalBody.appendChild(DomBuilder.label("Tipo do veículo", $selTipo));
 
-	const $selFabricante = DomBuilder.select("fbe_id", filtros.fabricantes, (e) => {
+	const idFabricante = veiculo == undefined ? undefined : veiculo.vco_fabricante.fbe_id;
+	const $selFabricante = DomBuilder.select("fbe_id", filtros.fabricantes, idFabricante, (e) => {
 		$selModelo.innerHTML = "";
 
 		const $currentOption = $selFabricante.options[$selFabricante.selectedIndex];
@@ -147,8 +176,14 @@ function renderModal($divModal, filtros, veiculo = undefined) {
 	});
 	$modalBody.appendChild(DomBuilder.label("Fabricante", $selFabricante));
 
-	const $selModelo = DomBuilder.select("mdo_id", [ ]);
+	const idModelo = veiculo == undefined ? undefined : veiculo.vco_modelo.mdo_id;
+	const aModelo = idFabricante == undefined ? [] : filtros.fabricante_modelo[idFabricante];
+	const $selModelo = DomBuilder.select("mdo_id", aModelo, idModelo);
 	$modalBody.appendChild(DomBuilder.label("Modelo", $selModelo));
+	
+	if (iTipo != undefined) {
+		toggleTipoCarro(iTipo, veiculo);
+	}
 
 	const $btnCancelar = DomBuilder.button("btn-cancelar", "Cancelar", (e) => {
 		e.preventDefault();
