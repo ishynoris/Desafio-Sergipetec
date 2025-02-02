@@ -39,6 +39,7 @@ function renderFiltros($form, filtros) {
 	$form.method = "post";
 	$form.appendChild(DomBuilder.inputText("vco_ano", "Ano"));
 	$form.appendChild(DomBuilder.select("vco_tipo", tipos));
+	$form.appendChild(DomBuilder.select("mdo_id", modelos));
 	$form.appendChild(DomBuilder.button("btn-filtrar", "Filtrar", ApiVeiculo.onFiltrar));
 }
 
