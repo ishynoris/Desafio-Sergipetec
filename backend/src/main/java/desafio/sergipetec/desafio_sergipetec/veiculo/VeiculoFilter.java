@@ -12,28 +12,35 @@ public class VeiculoFilter {
 	}
 
 	public Optional<Integer> getVeiculoId() {
-		var moduloId = this.filter.containsKey("vco_id")
+		var moduloId = this.hasParam("vco_id")
 			? Integer.parseInt(this.filter.get("vco_id"))
 			: null;
 		return Optional.ofNullable(moduloId);
 	}
 
 	public Optional<Integer> getModeloId() {
-		var moduloId = this.filter.containsKey("mdo_id")
+		var moduloId = this.hasParam("mdo_id")
 			? Integer.parseInt(this.filter.get("mdo_id"))
 			: null;
 		return Optional.ofNullable(moduloId);
 	}
 
 	public Optional<String> getTipo() {
-		var tipo = this.filter.get("vco_tipo");
+		var tipo = this.hasParam("vco_tipo")
+			? this.filter.get("vco_tipo")
+			: null;
 		return Optional.ofNullable(tipo);
 	}
 
 	public Optional<Integer> getAno() {
-		var ano = this.filter.containsKey("vco_ano")
+		var ano = this.hasParam("vco_ano")
 			? Integer.parseInt(this.filter.get("vco_ano"))
 			: null;
 		return Optional.ofNullable(ano);
+	}
+
+	private boolean hasParam(String campo) {
+		var param = this.filter.get(campo);
+		return param != null && param.length() > 0;
 	}
 }
