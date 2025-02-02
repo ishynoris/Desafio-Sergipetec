@@ -1,8 +1,11 @@
 package desafio.sergipetec.desafio_sergipetec.veiculo.factory;
 
+import java.io.IOException;
 import java.util.HashMap;
 
 import javax.naming.directory.InvalidAttributesException;
+
+import com.fasterxml.jackson.core.JsonGenerator;
 
 import desafio.sergipetec.desafio_sergipetec.veiculo.VeiculoEnum;
 import desafio.sergipetec.desafio_sergipetec.fabricante.FabricanteDAO;
@@ -45,5 +48,51 @@ final public class VeiculoFactory {
 		}
 
 		return this.factories.get(tipo);
+	}
+
+	public static HashMap<String, String> toMap(Veiculo veiculo) {
+		var map = new HashMap<String, String>();	
+		map.put("vco_id", convert(veiculo.getId()));
+		map.put("fbe_id", convert(veiculo.getFabricanteId()));
+		map.put("mdo_id", convert(veiculo.getModeloId()));
+		map.put("vco_ano", convert(veiculo.getAno()));
+		map.put("vco_preco", convert(veiculo.getPreco()));
+		map.put("vco_tipo", convert(veiculo.getTipoId()));
+		map.put("vco_portas", convert(veiculo.getQuantidadePortas()));
+		map.put("vco_combustivel", convert(veiculo.getCombustivelId()));
+		map.put("vco_cilindradas", convert(veiculo.getCilindradas()));
+		return map;
+	}
+
+	public static void jsonSerialize(JsonGenerator gen, Veiculo veiculo) throws IOException {
+		var tipo = veiculo.getTipo();
+
+		gen.writeStartObject();
+		gen.writeNumberField("vco_id", veiculo.getId());
+		gen.writeNumberField("vco_ano", veiculo.getAno());
+		gen.writeNumberField("vco_preco", veiculo.getPreco());
+		gen.writeNumberField("vco_tipo_cod", tipo.codigo);
+		gen.writeStringField("vco_tipo_text", tipo.name());
+
+		if (veiculo.isCarro()) {
+			var combustivel = veiculo.getTipoCombustivel();
+			gen.writeObjectField("vco_portas", veiculo.getQuantidadePortas());
+			gen.writeNumberField("vco_combustivel_cod", combustivel.codigo);
+			gen.writeStringField("vco_combustivel_text", combustivel.name());
+		}
+
+		if (veiculo.isMoto()) {
+			gen.writeStringField("vco_cilindradas", veiculo.getCilindradas() + "cc");
+		}
+
+		gen.writeObjectField("fbe_id", veiculo.getFabricanteId());
+		gen.writeObjectField("mdo_id", veiculo.getModeloId());
+		gen.writeBooleanField("vco_is_carro", veiculo.isCarro());
+		gen.writeBooleanField("vco_is_moto", veiculo.isMoto());
+		gen.writeEndObject();
+	}
+
+	private static String convert(Number val) {
+		return val == null ? null : String.valueOf(val);
 	}
 }

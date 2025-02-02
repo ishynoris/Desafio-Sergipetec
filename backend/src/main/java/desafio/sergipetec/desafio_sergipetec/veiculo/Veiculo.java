@@ -1,6 +1,7 @@
 package desafio.sergipetec.desafio_sergipetec.veiculo;
 
 import java.io.IOException;
+import java.util.HashMap;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonSerializer;
@@ -10,7 +11,7 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import desafio.sergipetec.desafio_sergipetec.fabricante.Fabricante;
 import desafio.sergipetec.desafio_sergipetec.modelo.Modelo;
 import desafio.sergipetec.desafio_sergipetec.veiculo.Veiculo.VeiculoSerializer;
-
+import desafio.sergipetec.desafio_sergipetec.veiculo.factory.VeiculoFactory;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -76,31 +77,30 @@ public class Veiculo {
 		return VeiculoEnum.isMoto(this.getTipo().codigo);
 	}
 
+	public Integer getFabricanteId() {
+		return this.fabricante.getId();
+	}
+
+	public Integer getModeloId() {
+		return this.modelo.getId();
+	}
+
+	public Integer getTipoId() {
+		return this.tipo.codigo;
+	}
+
+	public Integer getCombustivelId() {
+		return this.tipoCombustivel.codigo;
+	}
+
+	public HashMap<String, String> toMap() {
+		return VeiculoFactory.toMap(this);
+	}
+
 	public static class VeiculoSerializer extends JsonSerializer<Veiculo> {
 		@Override
 		public void serialize(Veiculo veiculo, JsonGenerator gen, SerializerProvider serializers) throws IOException {
-			gen.writeStartObject();
-			gen.writeNumberField("vco_id", veiculo.id);
-			gen.writeNumberField("vco_ano", veiculo.ano);
-			gen.writeNumberField("vco_preco", veiculo.preco);
-			gen.writeNumberField("vco_tipo_cod", veiculo.tipo.codigo);
-			gen.writeStringField("vco_tipo_text", veiculo.tipo.name());
-
-			if (veiculo.isCarro()) {
-				gen.writeObjectField("vco_portas", veiculo.quantidadePortas);
-				gen.writeNumberField("vco_combustivel_cod", veiculo.tipoCombustivel.codigo);
-				gen.writeStringField("vco_combustivel_text", veiculo.tipoCombustivel.name());
-			}
-
-			if (veiculo.isMoto()) {
-				gen.writeStringField("vco_cilindradas", veiculo.cilindradas + "cc");
-			}
-
-			gen.writeObjectField("vco_fabricante", veiculo.fabricante);
-			gen.writeObjectField("vco_modelo", veiculo.modelo);
-			gen.writeBooleanField("vco_is_carro", veiculo.isCarro());
-			gen.writeBooleanField("vco_is_moto", veiculo.isMoto());
-			gen.writeEndObject();
+			VeiculoFactory.jsonSerialize(gen, veiculo);
 		}
 	}
 }
