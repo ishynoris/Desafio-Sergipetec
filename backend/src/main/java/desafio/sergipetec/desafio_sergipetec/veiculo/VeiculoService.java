@@ -9,6 +9,7 @@ import javax.naming.directory.InvalidAttributesException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import desafio.sergipetec.desafio_sergipetec.fabricante.Fabricante;
 import desafio.sergipetec.desafio_sergipetec.fabricante.FabricanteDAO;
 import desafio.sergipetec.desafio_sergipetec.modelo.Modelo;
 import desafio.sergipetec.desafio_sergipetec.modelo.ModeloDAO;
@@ -57,6 +58,10 @@ public class VeiculoService {
 	public Veiculo atualizar(Veiculo veiculo, HashMap<String, String> form) throws InvalidAttributesException {
 		var novoVeiculo = this.getFactory().replace(veiculo, form);
 		return this.veiculoDAO.save(novoVeiculo);
+	}
+
+	public List<Fabricante> getFabricantes() {
+		return this.fabricanteDAO.findAll();
 	}
 
 	public List<Modelo> getModelos() {
