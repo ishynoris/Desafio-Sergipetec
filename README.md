@@ -1,7 +1,8 @@
 O projeto implementado usando:
 - Java 12 
 - Spring Boot
-- Maven;
+- Maven
+- MySQL 8
 
 Nacessário executar o script abaixo para criar usuário, banco de dados e tabelas principais;
 
