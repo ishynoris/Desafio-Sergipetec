@@ -53,6 +53,10 @@ final public class VeiculoFactory {
 	}
 
 	public static HashMap<String, String> toMap(Veiculo veiculo) {
+		var cilindradas = veiculo.isMoto() ? veiculo.getCilindradas() : null;
+		var portas = veiculo.isCarro() ? veiculo.getQuantidadePortas() : null;
+		var combustivel = veiculo.isCarro() ? veiculo.getCombustivelId() : null;
+
 		var map = new HashMap<String, String>();	
 		map.put("vco_id", convert(veiculo.getId()));
 		map.put("fbe_id", convert(veiculo.getFabricanteId()));
@@ -60,9 +64,9 @@ final public class VeiculoFactory {
 		map.put("vco_ano", convert(veiculo.getAno()));
 		map.put("vco_preco", convert(veiculo.getPreco()));
 		map.put("vco_tipo", convert(veiculo.getTipoId()));
-		map.put("vco_portas", convert(veiculo.getQuantidadePortas()));
-		map.put("vco_combustivel", convert(veiculo.getCombustivelId()));
-		map.put("vco_cilindradas", convert(veiculo.getCilindradas()));
+		map.put("vco_cilindradas", convert(cilindradas));
+		map.put("vco_portas", convert(portas));
+		map.put("vco_combustivel", convert(combustivel));
 		return map;
 	}
 
