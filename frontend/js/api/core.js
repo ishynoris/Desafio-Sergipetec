@@ -23,6 +23,51 @@ const API = {
 			}
 		};
 		request.send(null);
+	},
+
+	post: (resource, formData, callback) => {
+		const params = {};
+		formData.forEach((value, key) => params[key] = value);
+
+		const request = new XMLHttpRequest;
+		request.open("POST", `${ENV.api_url}/${resource}`);
+		request.setRequestHeader("Content-Type", "application/json");
+		request.onreadystatechange = (e) => {
+			if (request.readyState == 4) {
+				const json = JSON.parse(request.responseText);
+				callback(request.status, json);
+			}
+		}
+		request.send(JSON.stringify(params));
+	},
+
+	put: (resource, formData, callback) => {
+		const params = {};
+		formData.forEach((value, key) => params[key] = value);
+		console.log(params);
+
+		const request = new XMLHttpRequest;
+		request.open("PUT", `${ENV.api_url}/${resource}`);
+		request.setRequestHeader("Content-Type", "application/json");
+		request.onreadystatechange = (e) => {
+			if (request.readyState == 4) {
+				const json = JSON.parse(request.responseText);
+				callback(request.status, json);
+			}
+		}
+		request.send(JSON.stringify(params));
+	},
+
+	delete: (resource, id, callback) => {
+		const request = new XMLHttpRequest;
+		request.open("DELETE", `${ENV.api_url}/${resource}/${id}`);
+		request.onreadystatechange = (e) => {
+			if (request.readyState == 4) {
+				const json = JSON.parse(request.responseText);
+				callback(request.status, json);
+			}
+		}
+		request.send(null);
 	}
 }
 
@@ -55,6 +100,12 @@ const DomBuilder = {
 		$input.value = value;
 		$input.placeholder = placeholder;
 		return DomBuilder.addClass($input, "form-control");
+	},
+	
+	inputHidden: (name, value) => {
+		const $input = DomBuilder.inputText(name, "", value);
+		$input.type = "hidden";
+		return $input;
 	},
 
 	cell: (texto, cell = "td") => {
@@ -136,6 +187,13 @@ const DomBuilder = {
 		return $button;
 	},
 
+	formPost: (id) => {
+		const $form = document.createElement("form");
+		$form.method = "post";
+		$form.id = id;
+		return $form;
+	},
+
 	modal: (id, title) => {
 		const $divModal = DomBuilder.div("modal fade");
 		$divModal.id = id;
@@ -144,7 +202,7 @@ const DomBuilder = {
 		<div class="modal-dialog">
 			<div class="modal-content">
 				<div class="modal-header">
-				  <h1 class="modal-title fs-5" id="modal-veiculo-label">${title}</h1>
+				  <h1 class="modal-title fs-5" id="${id}-label">${title}</h1>
 				  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 				</div>
 				<div class="modal-body"></div>
