@@ -4,8 +4,10 @@ import java.util.HashMap;
 import java.util.List;
 
 import javax.management.InvalidAttributeValueException;
+import javax.naming.directory.InvalidAttributesException;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -27,7 +29,8 @@ public class VeiculoController {
 
 	@Autowired private VeiculoService service;
 	@Autowired private FiltrosVeiculoService filtroService;
-	
+
+	@CrossOrigin
 	@GetMapping
 	public @ResponseBody HashMap<String, Object> getAll() {
 		HashMap<String, Object> filtros = new HashMap<>();
@@ -41,28 +44,68 @@ public class VeiculoController {
 		return bodyResponse;
 	}
 
-	@GetMapping("/filtro")
+	@CrossOrigin
+	@GetMapping("/pesquisar")
 	public @ResponseBody List<Veiculo> getAll(@RequestParam HashMap<String, String> form) throws NumberFormatException, InvalidAttributeValueException {
 		return this.service.getVeiculos(form);
 	}
 
+	@CrossOrigin
 	@GetMapping("/{id}")
-	public String getById(@PathVariable int id) {
-		return "getById: " + id;
+	public Veiculo getById(@PathVariable int id) {
+		return this.service.get(id);
 	}
 
+	@CrossOrigin
 	@PostMapping
-	public String save(@RequestBody HashMap<String, String> map) {
-		return "getById: " + map.toString();
+	public HashMap<String, Object> save(@RequestBody HashMap<String, String> form) throws InvalidAttributesException, Exception {
+		var response = new HashMap<String, Object>();
+		var success = true;
+		try {
+			var veiculo = this.service.salvar(form);
+			response.put("veiculo", veiculo);
+		} catch (Exception e) {
+			success = false;
+			response.put("message", e.getMessage());
+		}
+
+		response.put("success", success);
+		return response;
 	}
 
+	@CrossOrigin
 	@PutMapping("/{id}")
-	public String update(@PathVariable int id, @RequestBody HashMap<String, String> veiculo) {
-		return "update: " + veiculo.toString();
+	public HashMap<String, Object> update(@PathVariable int id, @RequestBody HashMap<String, String> form) throws InvalidAttributesException, Exception {
+		var response = new HashMap<String, Object>();
+		var success = true;
+		try {
+			var veiculo = this.service.get(id);
+			veiculo = this.service.atualizar(veiculo, form);
+			response.put("veiculo", veiculo);
+		} catch (Exception e) {
+			success = false;
+			response.put("message", e.getMessage());
+		}
+
+		response.put("success", success);
+		return response;
 	}
 
+	@CrossOrigin
 	@DeleteMapping("/{id}")
-	public String delete(@PathVariable int id) {
-		return "delete " + id;
+	public HashMap<String, Object> delete(@PathVariable int id) {
+		var response = new HashMap<String, Object>();
+		var success = true;
+		
+		try {
+			var veiculo = this.service.apagar(id);
+			response.put("veiculo", veiculo);
+		} catch (Exception e) {
+			success = false;
+			response.put("message", e.getMessage());
+		}
+
+		response.put("success", success);
+		return response;
 	}
 }
