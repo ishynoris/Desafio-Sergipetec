@@ -15,7 +15,6 @@ import desafio.sergipetec.desafio_sergipetec.modelo.Modelo;
 import desafio.sergipetec.desafio_sergipetec.modelo.ModeloDAO;
 import desafio.sergipetec.desafio_sergipetec.veiculo.factory.VeiculoFactory;
 import desafio.sergipetec.desafio_sergipetec.veiculo.repository.VeiculoDAOInterface;
-import jakarta.persistence.EntityNotFoundException;
 
 @Service
 public class VeiculoService {
@@ -41,23 +40,22 @@ public class VeiculoService {
 	}
 
 	public Veiculo get(Integer id) {
-		var veiculo = this.veiculoDAO.findById(id);
-		if (!veiculo.isPresent()) {
-			throw new EntityNotFoundException(
-				String.format("Veículo (%d) não encontrado", id)
-			);
-		}
-		return veiculo.get();
+		return this.veiculoDAO.findById(id);
 	}
 
-	public Veiculo salvar(HashMap<String, String> form) throws InvalidAttributesException {
+	public Veiculo salvar(HashMap<String, String> form) throws InvalidAttributesException, Exception {
 		var veiculo = this.produce(form);
 		return this.veiculoDAO.save(veiculo);
 	}
 
-	public Veiculo atualizar(Veiculo veiculo, HashMap<String, String> form) throws InvalidAttributesException {
+	public Veiculo apagar(Integer id) throws InvalidAttributesException, Exception {
+		return this.veiculoDAO.delete(id);
+	}
+
+
+	public Veiculo atualizar(Veiculo veiculo, HashMap<String, String> form) throws InvalidAttributesException, Exception {
 		var novoVeiculo = this.getFactory().replace(veiculo, form);
-		return this.veiculoDAO.save(novoVeiculo);
+		return this.veiculoDAO.update(novoVeiculo);
 	}
 
 	public List<Fabricante> getFabricantes() {

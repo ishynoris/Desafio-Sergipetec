@@ -61,6 +61,9 @@ public class Veiculo {
 	@Enumerated(EnumType.ORDINAL)
 	private TipoCombustivelEnum tipoCombustivel;
 
+	@Column(name="vco_deletado")
+	private Integer deletado;
+
 	@OneToOne
 	@JoinColumn(name="fbe_id")
 	private Fabricante fabricante;
@@ -95,6 +98,10 @@ public class Veiculo {
 
 	public HashMap<String, String> toMap() {
 		return VeiculoFactory.toMap(this);
+	}
+
+	public boolean isDeletado() {
+		return this.deletado != 0;
 	}
 
 	@Override
